@@ -63,13 +63,14 @@ router.post(`/posts`, (req, res) => {
 router.post(`/posts/:id/comments`, (req, res) => {
     if (!Object.keys(req.body).includes("text")){
         return res.status(400).json({ errorMessage: "Please provide text for the comment." })
-    } 
+    }
+    const comment = {...req.body, post_id: req.params.id}; 
     console.log(req.params.id)
-    console.log(req.body)
-    Hubs.insertComment(req.body)
+    console.log(comment)
+    Hubs.insertComment(comment)
         .then(hub => {
             if (hub) {
-            res.status(201).json(hub);
+            res.status(201).json(comment);
             } else {
                 res.status(404).json({ message: "The post with the specified ID does not exist."})
         }
