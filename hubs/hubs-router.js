@@ -97,6 +97,28 @@ router.delete('/posts/:id', (req, res) => {
     });
 });
 
+router.put('/posts/:id', (req, res) => {
+    if (!Object.keys(req.body).includes("title") || !Object.keys(req.body).includes("contents")){
+        return res.status(400).json({ errorMessage: "Please provide text for the comment." })
+    }
+    const newInfo = req.body;
+    Hubs.update(req.params.id, newInfo)
+      .then(hub => {
+        if (hub) {
+          res.status(200).json(hub);
+        } else {
+          res.status(404).json({ message: "The post with the specified ID does not exist." });
+        }
+      })
+      .catch(error => {
+        // log error to database
+        console.log(error);
+        res.status(500).json({
+          message: "The post information could not be modified.",
+        });
+      });
+  });
+
 module.exports = router;
 
 
